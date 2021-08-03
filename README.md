@@ -7,7 +7,7 @@ blog post [Authenticated Data Structures, as a Library, for
 Free!](https://bentnib.org/posts/2016-04-12-authenticated-data-structures-as-a-library.html) for more information.
 
 To compile it, you'll need OCaml (tested with version 4.05.0), `opam`,
-`jbuilder`/`dune`. You'll need to install the
+`dune`. You'll need to install the
 prerequisites `ezjsonm` and `cryptokit`:
 
     opam install ezjsonm cryptokit
@@ -61,7 +61,7 @@ val result : string option = Some "A"
 - : [ `Ok of Authentikit.Kit.proof * string option | `ProofFailure ] = `ProofFailure
 ```
 ```reason
-// create a tree 
+// create a tree
 utop # #require "rtop";;
 Reason # let tree =
   Merkle.Prover.(

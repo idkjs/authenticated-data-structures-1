@@ -1,0 +1,31 @@
+opam-version: "2.0"
+name: "authentikit"
+version: "~dev"
+depends: [
+  "cryptokit" {= "1.16.1"}
+  "dune" {= "2.9.0"}
+  "ezjsonm" {= "1.2.0"}
+  "ocaml" {= "4.12.0"}
+  "reason" {= "3.7.0"}
+]
+build: [
+  ["dune" "subst" "--root" "."] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files"
+    "false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+synopsis: "authentikit"
+description: "authentikit"
+maintainer: "idkjs"
+license: "MIT"
