@@ -60,6 +60,69 @@ val result : string option = Some "A"
 # Merkle.Verifier.retrieve [`L;`L] code proof;;
 - : [ `Ok of Authentikit.Kit.proof * string option | `ProofFailure ] = `ProofFailure
 ```
+```reason
+// create a tree 
+utop # #require "rtop";;
+Reason # let tree =
+  Merkle.Prover.(
+    make_branch(
+      make_branch(make_leaf("a"), make_leaf("b")),
+      make_branch(make_leaf("c"), make_leaf("d")),
+    )
+  );
+let tree: Merkle.Prover.tree = <abstr>;
+
+/* get the hash code of the root */
+let code = Authentikit.Prover.get_hash(tree);
+let code: string = ".zwÇJà\\þÜ\boöWS\029±¾";
+/* run a query on the server side, get a proof and a result */
+Reason # let (proof, result) = Merkle.Prover.retrieve([`L, `L], tree);
+let proof: Authentikit.Kit.proof =
+  [`A([`String("right"),
+       `A([`String("?úm&,û\031\rüQJ\001|d}ò\016l"),
+           `String("i?Bæpø\0000pà\018\023ÛÁ5")])]),
+   `A([`String("right"),
+       `A([`String("X\005\028½1LàöàåÉ\018o\b»£ð "),
+           `String("ßçÂæ2=>ø\014;Éþ")])]),
+   `A([`String("left"), `String("a")])];
+let result: option(string) = Some("a");
+
+/* verify the proof on the client side */
+Reason # Merkle.Verifier.retrieve([`L, `L], code, proof);
+- : [ `Ok(Authentikit.Kit.proof, option(string))
+    | `ProofFailure ]
+= `Ok(([], Some("a")))
+/* Let's make another tree and try to trick the verifier */
+Reason # let other_tree =
+  Merkle.Prover.(
+    make_branch(
+      make_branch(make_leaf("A"), make_leaf("B")),
+      make_branch(make_leaf("C"), make_leaf("D")),
+    )
+  );let (proof, result) = Merkle.Prover.retrieve([`L, `L], other_tree);
+let other_tree: Merkle.Prover.tree = <abstr>;
+
+/* Run a query on this tree */
+Reason # let (proof, result) = Merkle.Prover.retrieve([`L, `L], other_tree);
+let proof: Authentikit.Kit.proof =
+  [`A([`String("right"),
+       `A([`String("QÙG\000öî!øÔ¸³>\017zW\0182("),
+           `String("0ïî\002b4¬\002@-=g³Å\022|")])]),
+   `A([`String("right"),
+       `A([`String("êNêQS¥Ä\0038
+j\018uY
+\030\005"),
+           `String("ã2|ßMæñ
+                           §\029-\016Ý\005nxﾸ")])]),
+   `A([`String("left"), `String("A")])];
+let result: option(string) = Some("A");
+/* Now verifying this proof against the code for the original tree fails: */
+Merkle.Verifier.retrieve([`L, `L], code, proof);
+Reason # Merkle.Verifier.retrieve([`L, `L], code, proof);
+- : [ `Ok(Authentikit.Kit.proof, option(string))
+    | `ProofFailure ]
+= `ProofFailure
+```
 
 
 ## Structure of the code
