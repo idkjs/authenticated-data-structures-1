@@ -75,6 +75,7 @@ let tree: Merkle.Prover.tree = <abstr>;
 /* get the hash code of the root */
 let code = Authentikit.Prover.get_hash(tree);
 let code: string = ".zwÇJà\\þÜ\boöWS\029±¾";
+
 /* run a query on the server side, get a proof and a result */
 Reason # let (proof, result) = Merkle.Prover.retrieve([`L, `L], tree);
 let proof: Authentikit.Kit.proof =
@@ -92,6 +93,7 @@ Reason # Merkle.Verifier.retrieve([`L, `L], code, proof);
 - : [ `Ok(Authentikit.Kit.proof, option(string))
     | `ProofFailure ]
 = `Ok(([], Some("a")))
+
 /* Let's make another tree and try to trick the verifier */
 Reason # let other_tree =
   Merkle.Prover.(
@@ -116,6 +118,7 @@ j\018uY
                            §\029-\016Ý\005nxﾸ")])]),
    `A([`String("left"), `String("A")])];
 let result: option(string) = Some("A");
+
 /* Now verifying this proof against the code for the original tree fails: */
 Merkle.Verifier.retrieve([`L, `L], code, proof);
 Reason # Merkle.Verifier.retrieve([`L, `L], code, proof);
